@@ -2,19 +2,17 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
+CREATE SCHEMA `LL_Database` DEFAULT CHARACTER SET utf8;
+USE `LL_Database` ;
 
-CREATE SCHEMA IF NOT EXISTS `LittleLemonDB` DEFAULT CHARACTER SET utf8 ;
-USE `LittleLemonDB` ;
-
-
-CREATE TABLE `LittleLemonDB`.`Booking` (
+CREATE TABLE `LL_Database`.`Booking` (
   `BookingID` INT NOT NULL,
   `Date` DATETIME NOT NULL,
   `TableNumber` INT NOT NULL,
   PRIMARY KEY (`BookingID`))
 ENGINE = InnoDB;
 
-CREATE TABLE `LittleLemonDB`.`Customer` (
+CREATE TABLE `LL_Database`.`Customer` (
   `CustomerID` INT NOT NULL,
   `FullName` VARCHAR(255) NOT NULL,
   `ContactNumber` VARCHAR(45) NOT NULL,
@@ -22,21 +20,20 @@ CREATE TABLE `LittleLemonDB`.`Customer` (
   PRIMARY KEY (`CustomerID`))
 ENGINE = InnoDB;
 
-
-CREATE TABLE `LittleLemonDB`.`Menu` (
+CREATE TABLE `LL_Database`.`Menu` (
   `MenuID` INT NOT NULL,
   `Name` VARCHAR(45) NULL,
   `Description` VARCHAR(255) NULL,
   PRIMARY KEY (`MenuID`))
 ENGINE = InnoDB;
 
-CREATE TABLE `LittleLemonDB`.`DeliveryStatus` (
+CREATE TABLE `LL_Database`.`DeliveryStatus` (
   `DeliveryID` INT NOT NULL,
   `DeliveryDate` DATETIME NOT NULL,
   PRIMARY KEY (`DeliveryID`))
 ENGINE = InnoDB;
 
-CREATE TABLE `LittleLemonDB`.`Orders` (
+CREATE TABLE `LL_Database`.`Orders` (
   `OrderID` INT NOT NULL,
   `Date` DATETIME NOT NULL,
   `Quantity` INT NOT NULL,
@@ -46,18 +43,18 @@ CREATE TABLE `LittleLemonDB`.`Orders` (
   `Menu_MenuID` INT NOT NULL,
   `DeliveryStatus_DeliveryID` INT NOT NULL,
   PRIMARY KEY (`OrderID`, `Customer_CustomerID`, `Menu_MenuID`, `DeliveryStatus_DeliveryID`),
-  INDEX `fk_Orders_Booking_idx` (`Booking_BookingID` ASC) VISIBLE,
-  INDEX `fk_Orders_Customer1_idx` (`Customer_CustomerID` ASC) VISIBLE,
-  INDEX `fk_Orders_Menu1_idx` (`Menu_MenuID` ASC) VISIBLE,
-  INDEX `fk_Orders_DeliveryStatus1_idx` (`DeliveryStatus_DeliveryID` ASC) VISIBLE,
+  INDEX `fk_Orders_Booking_idx` (`Booking_BookingID` ASC),
+  INDEX `fk_Orders_Customer1_idx` (`Customer_CustomerID` ASC),
+  INDEX `fk_Orders_Menu1_idx` (`Menu_MenuID` ASC),
+  INDEX `fk_Orders_DeliveryStatus1_idx` (`DeliveryStatus_DeliveryID` ASC),
   CONSTRAINT `fk_Orders_Booking`
     FOREIGN KEY (`Booking_BookingID`)
-    REFERENCES `LittleLemonDB`.`Booking` (`BookingID`)
+    REFERENCES `LL_Database`.`Booking` (`BookingID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Orders_Customer1`
     FOREIGN KEY (`Customer_CustomerID`)
-    REFERENCES `LittleLemonDB`.`Customer` (`CustomerID`)
+    REFERENCES `LL_Database`.`Customer` (`CustomerID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_Orders_Menu1`
@@ -81,14 +78,13 @@ CREATE TABLE `LittleLemonDB`.`Staff` (
   `Salary` DECIMAL NOT NULL,
   `Customer_CustomerID` INT NOT NULL,
   PRIMARY KEY (`StaffID`),
-  INDEX `fk_Staff_Customer1_idx` (`Customer_CustomerID` ASC) VISIBLE,
+  INDEX `fk_Staff_Customer1_idx` (`Customer_CustomerID` ASC),
   CONSTRAINT `fk_Staff_Customer1`
     FOREIGN KEY (`Customer_CustomerID`)
     REFERENCES `LittleLemonDB`.`Customer` (`CustomerID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
-
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
